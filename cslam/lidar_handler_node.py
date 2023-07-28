@@ -213,7 +213,7 @@ if __name__ == '__main__':
                         ('evaluation.enable_gps_recording', False), 
                         ('evaluation.gps_topic', ""),            
                         ('evaluation.gps_topic', ""),        
-                        ('visualization.enable', False),
+                        ('visualization.enable', True),
                         ])
     params = {}
     params['frontend.pointcloud_topic'] = node.get_parameter(
