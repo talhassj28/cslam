@@ -201,19 +201,19 @@ if __name__ == '__main__':
     node = Node("map_manager")
     node.declare_parameters(
             namespace='',
-            parameters=[('frontend.pointcloud_topic', None),
-                        ('frontend.odom_topic', None),
-                        ('frontend.map_manager_process_period_ms', None),
-                        ('frontend.voxel_size', None),
-                        ('frontend.registration_min_inliers', None),
+            parameters=[('frontend.pointcloud_topic', "pointcloud"),
+                        ('frontend.odom_topic', "odom"),
+                        ('frontend.map_manager_process_period_ms', 100),
+                        ('frontend.voxel_size', 0.5),
+                        ('frontend.registration_min_inliers', 60),
                         ('frontend.keyframe_generation_ratio_distance', 0.5),
                         ('frontend.pointcloud_odom_approx_time_sync_s', 0.1),
-                        ('robot_id', None),           
+                        ('robot_id', 0),           
                         ('evaluation.enable_logs', False),  
                         ('evaluation.enable_gps_recording', False), 
                         ('evaluation.gps_topic', ""),            
                         ('evaluation.gps_topic', ""),        
-                        ('visualization.enable', False),
+                        ('visualization.enable', True),
                         ])
     params = {}
     params['frontend.pointcloud_topic'] = node.get_parameter(
