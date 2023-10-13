@@ -61,15 +61,23 @@ DecentralizedPGO::DecentralizedPGO(std::shared_ptr<rclcpp::Node> &node)
           std::bind(&DecentralizedPGO::write_current_estimates_callback, this,
                     std::placeholders::_1));
 
+  // Standardabweichung für Rotation 0.01 (rad?)
   rotation_default_noise_std_ = 0.01;
+  // Standardabweichung für Translation 0.1 (m?)
   translation_default_noise_std_ = 0.1;
+  // Deklaration Vektor für die Standardabweichungen
   Eigen::VectorXd sigmas(6);
+  // Fülle Vektor
   sigmas << rotation_default_noise_std_, rotation_default_noise_std_,
       rotation_default_noise_std_, translation_default_noise_std_,
       translation_default_noise_std_, translation_default_noise_std_;
+  // Erstelle gtsam noise model
   default_noise_model_ = gtsam::noiseModel::Diagonal::Sigmas(sigmas);
+  // Lege pose graph an 
   pose_graph_ = boost::make_shared<gtsam::NonlinearFactorGraph>();
+  // Lege Value, also Knoten, für die Posenschätzung im Graphen an
   current_pose_estimates_ = boost::make_shared<gtsam::Values>();
+  // Lege Value für Odometriedaten an
   odometry_pose_estimates_ = boost::make_shared<gtsam::Values>();
 
   // Optimization timers
@@ -233,9 +241,15 @@ bool DecentralizedPGO::check_received_pose_graphs()
 void DecentralizedPGO::odometry_callback(
     const cslam_common_interfaces::msg::KeyframeOdom::ConstSharedPtr msg)
 {
+  // Konvertiere Odometriedaten in ein gtsam::Pose3 Objekt
+  // odom enthält unter der Haube pose+covariance und twist+covariance
   gtsam::Pose3 current_estimate = odometry_msg_to_pose3(msg->odom);
+
+  // Normalerweise (Single-SLAM) gibt es immer ein Symbol -> Laut Doku: Keys um Werte von den Values abzurufen
+  // Bei Multi-Robot nutzt man LabeledSymbol. Diese Speicher zwei char-Symbole zusätzlich zum integer
   gtsam::LabeledSymbol symbol(GRAPH_LABEL, ROBOT_LABEL(robot_id_), msg->id);
 
+  // Hinzufügen eines Values
   odometry_pose_estimates_->insert(symbol, current_estimate);
   if (msg->id == 0)
   {
