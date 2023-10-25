@@ -1,3 +1,5 @@
+// In dieser Datei werden Funktionend definiert, die gtsam Datentypen in ROS-msg-Typen umwandeln
+
 #include "cslam/back_end/gtsam_utils.h"
 
 namespace cslam {
